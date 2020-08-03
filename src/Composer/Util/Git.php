@@ -93,6 +93,9 @@ class Git
         // if we have a private github url and the ssh protocol is disabled then we skip it and directly fallback to https
         $bypassSshForGitHub = preg_match('{^git@' . self::getGitHubDomainsRegex($this->config) . ':(.+?)\.git$}i', $url) && !in_array('ssh', $protocols, true);
 
+        // Use always https, workaround
+        $url = str_replace('git@', 'https://', $url);
+        $url = preg_replace('/(.*\..*):(.*)/i', "$1/$2", $url);
         $command = call_user_func($commandCallable, $url);
 
         $auth = null;
